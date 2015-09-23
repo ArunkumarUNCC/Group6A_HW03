@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 
 public class Trivia_Activity extends AppCompatActivity {
 
+    //Hello Git in Android Studio
     public RadioButton fAnswerOne, fAnswerTwo, fAnswerThree, fAnswerFour;
 
     @Override
