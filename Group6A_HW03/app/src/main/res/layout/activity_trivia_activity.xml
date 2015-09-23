@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.group6a_hw03.group6a_hw03.Creaute_Question">
+    tools:context="com.group6a_hw03.group6a_hw03.Trivia_Activity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/questionOne"
-            android:id="@+id/radioButtonQuestion1"
+            android:id="@+id/radioButtonAnswer1"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -37,28 +37,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/questionTwo"
-            android:id="@+id/radioButtonQuestion2"
-            android:layout_alignTop="@+id/radioButtonQuestion1"
-            android:layout_alignRight="@+id/radioButtonQuestion1"
-            android:layout_alignEnd="@+id/radioButtonQuestion1" />
+            android:id="@+id/radioButtonAnswer2"
+            android:layout_alignTop="@+id/radioButtonAnswer1"
+            android:layout_alignRight="@+id/radioButtonAnswer1"
+            android:layout_alignEnd="@+id/radioButtonAnswer1" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/questionThree"
-            android:id="@+id/radioButtonQuestion3"
-            android:layout_below="@+id/radioButtonQuestion2"
-            android:layout_alignRight="@+id/radioButtonQuestion2"
-            android:layout_alignEnd="@+id/radioButtonQuestion2" />
+            android:id="@+id/radioButtonAnswer3"
+            android:layout_below="@+id/radioButtonAnswer2"
+            android:layout_alignRight="@+id/radioButtonAnswer2"
+            android:layout_alignEnd="@+id/radioButtonAnswer2" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/questionFour"
-            android:id="@+id/radioButtonQuestion4"
-            android:layout_below="@+id/radioButtonQuestion3"
-            android:layout_alignRight="@+id/radioButtonQuestion3"
-            android:layout_alignEnd="@+id/radioButtonQuestion3" />
+            android:id="@+id/radioButtonAnswer4"
+            android:layout_below="@+id/radioButtonAnswer3"
+            android:layout_alignRight="@+id/radioButtonAnswer3"
+            android:layout_alignEnd="@+id/radioButtonAnswer3" />
 
     </RadioGroup>
 

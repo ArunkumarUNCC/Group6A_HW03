@@ -5,13 +5,21 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 
-public class Creaute_Question extends AppCompatActivity {
+public class Trivia_Activity extends AppCompatActivity {
+
+    public RadioButton fAnswerOne, fAnswerTwo, fAnswerThree, fAnswerFour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_creaute__question);
+        setContentView(R.layout.activity_trivia_activity);
+
+        fAnswerOne = (RadioButton) findViewById(R.id.radioButtonAnswer1);
+        fAnswerTwo = (RadioButton) findViewById(R.id.radioButtonAnswer2);
+        fAnswerThree = (RadioButton) findViewById(R.id.radioButtonAnswer3);
+        fAnswerFour = (RadioButton) findViewById(R.id.radioButtonAnswer4);
     }
 
     @Override
