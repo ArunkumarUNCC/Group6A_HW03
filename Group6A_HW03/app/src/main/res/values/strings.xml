@@ -1,6 +1,40 @@
 <resources>
-    <string name="app_name">Group6A_HW03</string>
+    <string name="app_name"></string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="textViewTitle">Welcome to Trivia App</string>
+    <string name="exitApp">Exit</string>
+    <string name="deleteQuestions">Delete All My Questions</string>
+    <string name="createQuestion">Create Quiz Question</string>
+    <string name="startTrivia">Start Trivia</string>
+    <string name="startTrivaOnClick">startTrivaOnClick</string>
+    <string name="createQuestionOnClick">createQuestionOnClick</string>
+    <string name="deleteQuestionsOnClick">deleteQuestionsOnClick</string>
+    <string name="exitAppOnClick">exitAppOnClick</string>
+    <string name="title_activity_creaute__question">Trivia Activity</string>
+    <string name="questionOne">Question 1</string>
+    <string name="questionTwo">Question 2</string>
+    <string name="questionThree">Question 3</string>
+    <string name="questionFour">Question 4</string>
+    <string name="nextButton">Next</string>
+    <string name="quitButton">Quit</string>
+    <string name="questionText">Question text goes here...</string>
+    <string name="questionNumber">Q 1</string>
+    <string name="nextOnClick">nextOnClick</string>
+    <string name="quitOnClick">quitOnClick</string>
+    <string name="title_activity_results_">Results Activity</string>
+    <string name="tryAgainButton">Try Again</string>
+    <string name="trivaResults">Trivia Results</string>
+    <string name="correctAnswers">Correct Answers</string>
+    <string name="moreText">Here is some more information about how you did!</string>
+    <string name="tryAgainOnClick">tryAgainOnClick</string>
+    <string name="title_activity_create__single__question">Create Question Activity</string>
+    <string name="addAnswerOnClick">addAnswerOnClick</string>
+    <string name="selectImageOnClick">selectImageOnClick</string>
+    <string name="submitQuestionOnClick">submitQuestionOnClick</string>
+    <string name="submitQuestion">Submit</string>
+    <string name="selectImage">Select Image</string>
+    <string name="enterQuestion">Enter Question</string>
+    <string name="enterPossibleAnswer">Enter Possible Answer</string>
 </resources>

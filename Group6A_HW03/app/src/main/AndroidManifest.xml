@@ -16,6 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Creaute_Question"
+            android:label="@string/title_activity_creaute__question" >
+        </activity>
+        <activity
+            android:name=".Results_Activity"
+            android:label="@string/title_activity_results_" >
+        </activity>
+        <activity
+            android:name=".Create_Single_Question"
+            android:label="@string/title_activity_create__single__question" >
+        </activity>
     </application>
 
 </manifest>

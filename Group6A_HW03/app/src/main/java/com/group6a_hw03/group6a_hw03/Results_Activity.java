@@ -1,26 +1,33 @@
 package com.group6a_hw03.group6a_hw03;
-//Michael Vitulli
-//Group6A_HW03
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class Results_Activity extends AppCompatActivity {
 
+    public ProgressBar fCorrectProgress;
+    public TextView fProgressPercent;
+    public TextView fMoreText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_results_);
 
+        fCorrectProgress = (ProgressBar) findViewById(R.id.progressBarCorrectAnswers);
+        fProgressPercent = (TextView) findViewById(R.id.textViewPercentCorrect);
+        fMoreText = (TextView) findViewById(R.id.textViewMoreText);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_results_, menu);
         return true;
     }
 
@@ -39,19 +46,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void startTrivaOnClick (View aView){
+    public void tryAgainOnClick (View aView){
 
     }
 
-    public void createQuestionOnClick (View aView){
-
-    }
-
-    public void deleteQuestionsOnClick (View aView){
-
-    }
-
-    public void exitAppOnClick (View aView){
+    public void quitOnClick (View aView){
         finish();
     }
 }

@@ -1,26 +1,33 @@
 package com.group6a_hw03.group6a_hw03;
-//Michael Vitulli
-//Group6A_HW03
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class Create_Single_Question extends AppCompatActivity {
 
+    public ImageView fAddAnswer;
+    public EditText fQuestion, fAnswer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+
+        fAddAnswer = (ImageView) findViewById(R.id.imageViewAddAnswer);
+        fQuestion = (EditText) findViewById(R.id.editTextEnterQuestion);
+        fAnswer = (EditText) findViewById(R.id.editTextEnterAnswer);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_create__single__question, menu);
         return true;
     }
 
@@ -39,19 +46,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void startTrivaOnClick (View aView){
+    public void addAnswerOnClick (View aView){
 
     }
 
-    public void createQuestionOnClick (View aView){
+    public void selectImageOnClick (View aView){
 
     }
 
-    public void deleteQuestionsOnClick (View aView){
+    public void submitQuestionOnClick (View aView){
 
-    }
-
-    public void exitAppOnClick (View aView){
-        finish();
     }
 }

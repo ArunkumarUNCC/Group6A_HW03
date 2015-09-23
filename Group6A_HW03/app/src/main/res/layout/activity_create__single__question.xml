@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.group6a_hw03.group6a_hw03.Create_Single_Question">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selectImage"
+        android:id="@+id/buttonSelectImage"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="@string/selectImageOnClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submitQuestion"
+        android:id="@+id/buttonSubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/buttonSelectImage"
+        android:layout_alignEnd="@+id/buttonSelectImage"
+        android:onClick="@string/submitQuestionOnClick"
+        android:layout_alignLeft="@+id/buttonSelectImage"
+        android:layout_alignStart="@+id/buttonSelectImage" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewImageSelected"
+        android:layout_above="@+id/editTextEnterQuestion"
+        android:layout_alignRight="@+id/editTextEnterQuestion"
+        android:layout_alignEnd="@+id/editTextEnterQuestion"
+        android:layout_below="@+id/buttonSelectImage" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextEnterQuestion"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="@string/enterQuestion" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextEnterAnswer"
+        android:layout_below="@+id/editTextEnterQuestion"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/imageViewAddAnswer"
+        android:layout_toStartOf="@+id/imageViewAddAnswer"
+        android:hint="@string/enterPossibleAnswer" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewAddAnswer"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_alignBottom="@+id/editTextEnterAnswer"
+        android:layout_alignRight="@+id/editTextEnterQuestion"
+        android:layout_alignEnd="@+id/editTextEnterQuestion"
+        android:clickable="true"
+        android:onClick="@string/addAnswerOnClick" />
+</RelativeLayout>
