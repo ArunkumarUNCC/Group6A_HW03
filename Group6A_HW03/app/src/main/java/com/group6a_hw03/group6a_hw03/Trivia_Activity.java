@@ -1,15 +1,19 @@
 package com.group6a_hw03.group6a_hw03;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 public class Trivia_Activity extends AppCompatActivity {
 
-    //Hello Git in Android Studio-2
+
     public RadioButton fAnswerOne, fAnswerTwo, fAnswerThree, fAnswerFour;
 
     @Override
@@ -17,10 +21,12 @@ public class Trivia_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trivia_activity);
 
-        fAnswerOne = (RadioButton) findViewById(R.id.radioButtonAnswer1);
-        fAnswerTwo = (RadioButton) findViewById(R.id.radioButtonAnswer2);
-        fAnswerThree = (RadioButton) findViewById(R.id.radioButtonAnswer3);
-        fAnswerFour = (RadioButton) findViewById(R.id.radioButtonAnswer4);
+        if(connectedOnline()) {
+            fAnswerOne = (RadioButton) findViewById(R.id.radioButtonAnswer1);
+            fAnswerTwo = (RadioButton) findViewById(R.id.radioButtonAnswer2);
+            fAnswerThree = (RadioButton) findViewById(R.id.radioButtonAnswer3);
+            fAnswerFour = (RadioButton) findViewById(R.id.radioButtonAnswer4);
+        }
     }
 
     @Override
@@ -51,6 +57,21 @@ public class Trivia_Activity extends AppCompatActivity {
 
     public void quitOnClick (View aView){
         finish();
+    }
+
+    private boolean connectedOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        if(info!=null && info.isConnected()){
+            return true;
+        }
+        else{
+
+            Toast.makeText(Trivia_Activity.this, "Internet Not Connected", Toast.LENGTH_SHORT).show();
+
+            return false;
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.group6a_hw03.group6a_hw03;
 //Michael Vitulli
 //Group6A_HW03
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -40,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startTrivaOnClick (View aView){
-
+        Intent startTrivia = new Intent("com.group6a_hw03.group6a_hw03.intent.action.VIEW");
+        startActivity(startTrivia);
     }
 
     public void createQuestionOnClick (View aView){
