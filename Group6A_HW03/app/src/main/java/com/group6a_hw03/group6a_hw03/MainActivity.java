@@ -1,6 +1,10 @@
+/*
+    Michael Vitulli
+    Arunkumar Bagavathi
+    Group6A_HW03
+*/
 package com.group6a_hw03.group6a_hw03;
-//Michael Vitulli
-//Group6A_HW03
+
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startTrivaOnClick (View aView){
-        Intent startTrivia = new Intent("com.group6a_hw03.group6a_hw03.intent.action.VIEW");
-        startActivity(startTrivia);
+        Intent lStartTrivia = new Intent("com.group6a_hw03.group6a_hw03.intent.action.VIEW");
+        startActivity(lStartTrivia);
     }
 
     public void createQuestionOnClick (View aView){
-
+        Intent lNewQuestion = new Intent("com.group6a_hw03.group6a_hw03.intent.action.CREATE_QUESTION");
+        startActivity(lNewQuestion);
     }
 
     public void deleteQuestionsOnClick (View aView){
