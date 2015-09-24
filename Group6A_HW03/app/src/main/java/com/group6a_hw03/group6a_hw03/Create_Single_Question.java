@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -21,13 +22,16 @@ public class Create_Single_Question extends AppCompatActivity {
 
     public ImageView fAddAnswer, fSelectedImg;
     public EditText fQuestion, fAnswer;
-    public String fUriString;
+    public String fUriString, fImgUrl, fAnswerString;
 
     public RadioGroup fAnswerGroup;
 
     final static int fSELECT_PICTURE = 1;
+    final static int fTOAST_LENGTH = Toast.LENGTH_LONG;
 
+    public int fNumberAnswers;
     final static String fUPLOAD_PIC_URL = "http://dev.theappsdr.com/apis/trivia_fall15/uploadPhoto.php";
+    final static String fSAVE_QUESTION_URL = "http://dev.theappsdr.com/apis/trivia_fall15/saveNew.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class Create_Single_Question extends AppCompatActivity {
         fSelectedImg = (ImageView) findViewById(R.id.imageViewImageSelected);
         fAnswerGroup = (RadioGroup) findViewById(R.id.radioGroupAnswers);
 
+        fNumberAnswers = 0;
     }
 
     @Override
@@ -66,10 +71,18 @@ public class Create_Single_Question extends AppCompatActivity {
 
     public void addAnswerOnClick (View aView){
         RadioButton lRadioAnswer = new RadioButton(this);
-        lRadioAnswer.setText(fAnswer.getText());
-        fAnswerGroup.addView(lRadioAnswer);
-        //resets answer text so the same answer can't be put more than once
-        fAnswer.setText("");
+        if(fAnswer.getText().toString().equals("")){
+            sendToast("Answer can't be blank, try again!");
+        }else{
+            lRadioAnswer.setText(fAnswer.getText());
+            if(fAnswerString == null)
+                fAnswerString = fAnswer.getText().toString() + ";";
+            else fAnswerString += fAnswer.getText().toString() + ";";
+            fAnswerGroup.addView(lRadioAnswer);
+            //resets answer text so the same answer can't be put more than once
+            fAnswer.setText("");
+            fNumberAnswers++;
+        }
     }
 
     public void selectImageOnClick (View aView){
@@ -79,10 +92,16 @@ public class Create_Single_Question extends AppCompatActivity {
     }
 
     public void submitQuestionOnClick (View aView){
-        //1. uploadPhoto API (Returns URL)
-        new uploadPicAsyncTask(this).execute(fUPLOAD_PIC_URL, fUriString);
-        //2. Submit question content (with new URL)
-        //Single semicolon string
+        if(fQuestion.getText().toString().equals("")){
+            sendToast("Please add a question!");
+        }else if(fNumberAnswers < 2) {
+            sendToast("Please enter at least 2 possible answers.");
+        }else{
+            new saveQuestionAsyncTask(this).execute(fSAVE_QUESTION_URL, createQuestionString());
+            //1. uploadPhoto API (Returns URL)
+//            new uploadPicAsyncTask(this).execute(fUPLOAD_PIC_URL, fUriString);
+            //2. Submit question content (with new URL)
+        }
     }
 
     @Override
@@ -97,5 +116,24 @@ public class Create_Single_Question extends AppCompatActivity {
                     fSelectedImg.setImageURI(lSelectedImgUri);
             }
         }
+    }
+
+    public void sendToast(String aString){
+        Toast.makeText(this, aString, fTOAST_LENGTH).show();
+    }
+
+    public String createQuestionString(){
+        String lTempString;
+
+        lTempString = fQuestion.getText().toString() + ";";
+        lTempString += fAnswerString;
+
+//        if(fImgUrl.equals("-1"))
+//            lTempString += ";";
+//        else
+//            lTempString += fImgUrl + ";";
+        lTempString += fAnswerGroup.getCheckedRadioButtonId();
+
+        return lTempString;
     }
 }
