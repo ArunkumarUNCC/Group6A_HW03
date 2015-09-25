@@ -28,8 +28,9 @@ public class RequestParams {
         for(String lKey : fParams.keySet()){
             try {
                 lValue = URLEncoder.encode(fParams.get(lKey), "UTF-8");
-                if(lBuilder.length() > 0)
+                if(lBuilder.length() > 0){
                     lBuilder.append("&");
+                }
                 lBuilder.append(lKey + "=" +  lValue);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

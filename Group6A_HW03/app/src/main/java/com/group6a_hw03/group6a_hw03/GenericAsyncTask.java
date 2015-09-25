@@ -3,15 +3,11 @@ package com.group6a_hw03.group6a_hw03;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+
 
 public class GenericAsyncTask extends AsyncTask<RequestParams, Integer, String> {
     ProgressDialog fProgress;

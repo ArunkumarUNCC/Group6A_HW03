@@ -108,8 +108,8 @@ public class Create_Single_Question extends AppCompatActivity {
 
             //2. Submit question content (with new URL)
             RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
-            lParams.addParam(fGID, fGROUP_ID);
             lParams.addParam(fQID, createQuestionString());
+            lParams.addParam(fGID, fGROUP_ID);
             new GenericAsyncTask(this).execute(lParams);
 
             finish();

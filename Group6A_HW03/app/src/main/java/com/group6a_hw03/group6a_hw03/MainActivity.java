@@ -14,6 +14,9 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    final static String fUPLOAD_DELETE_URL = "http://dev.theappsdr.com/apis/trivia_fall15/deleteAll.php";
+    final static String fGROUP_ID = "356f512ffd7616a7f33d3a9bbb41e5b2";
+    final static String fGID = "gid";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void deleteQuestionsOnClick (View aView){
-
+        RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
+        lParams.addParam(fGID, fGROUP_ID);
     }
 
     public void exitAppOnClick (View aView){
