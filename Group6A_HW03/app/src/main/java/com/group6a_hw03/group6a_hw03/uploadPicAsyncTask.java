@@ -41,39 +41,42 @@ public class uploadPicAsyncTask extends AsyncTask<String, Integer, String> {
         BufferedReader lReader = null;
         String lInputLine;
         StringBuffer lResponse;
-
-        try {
-            URL lUrl = new URL(params[0]);
-            HttpURLConnection lConnection = (HttpURLConnection) lUrl.openConnection();
-            lConnection.setRequestMethod("POST");
-
-            String lStringUri = params[1];
-            DataOutputStream lWriter = new DataOutputStream(lConnection.getOutputStream());
-            lWriter.writeUTF(lStringUri);
-
-            lWriter.flush();
-            lWriter.close();
-
-            if (lConnection.getResponseCode() == 200) {
-                lReader = new BufferedReader(new InputStreamReader(lConnection.getInputStream()));
-                lResponse = new StringBuffer();
-
-                while ((lInputLine = lReader.readLine()) != null) {
-                    lResponse.append(lInputLine);
-                }
-                return lResponse.toString();//URL goes here
-            } else
-                return null;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        if(params[1] =="z"){
             try {
-                if (lReader != null)
-                    lReader.close();
+                URL lUrl = new URL(params[0]);
+                HttpURLConnection lConnection = (HttpURLConnection) lUrl.openConnection();
+                lConnection.setRequestMethod("POST");
+
+
+
+                String lStringUri = params[1];
+                DataOutputStream lWriter = new DataOutputStream(lConnection.getOutputStream());
+                lWriter.writeUTF(lStringUri);
+
+                lWriter.flush();
+                lWriter.close();
+
+                if (lConnection.getResponseCode() == 200) {
+                    lReader = new BufferedReader(new InputStreamReader(lConnection.getInputStream()));
+                    lResponse = new StringBuffer();
+
+                    while ((lInputLine = lReader.readLine()) != null) {
+                        lResponse.append(lInputLine);
+                    }
+                    return lResponse.toString();//URL goes here
+                } else
+                    return null;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (lReader != null)
+                        lReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return null;

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -14,11 +13,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class saveQuestionAsyncTask extends AsyncTask<String, Integer, String> {
+public class GenericAsyncTask extends AsyncTask<RequestParams, Integer, String> {
     ProgressDialog fProgress;
     Create_Single_Question fQuestionActivity;
 
-    public saveQuestionAsyncTask(Create_Single_Question aQuestionActivity) {
+    public GenericAsyncTask(Create_Single_Question aQuestionActivity) {
         this.fQuestionActivity = aQuestionActivity;
     }
     @Override
@@ -33,41 +32,30 @@ public class saveQuestionAsyncTask extends AsyncTask<String, Integer, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(RequestParams... params) {
         BufferedReader lReader = null;
+
         try {
-            URL lUrl = new URL(params[0]);
-            HttpURLConnection lConnection = (HttpURLConnection) lUrl.openConnection();
-            lConnection.setRequestMethod("POST");
-
-            lConnection.setDoOutput(true);
-            OutputStreamWriter lWriter = new OutputStreamWriter(lConnection.getOutputStream());
-
-            lWriter.write(params[1]);
-
-//            String lAnswerString = params[1];
-//            DataOutputStream lWriter = new DataOutputStream(lConnection.getOutputStream());
-//            lWriter.writeUTF(lAnswerString);
-
-            lWriter.flush();
-            lWriter.close();
-
-            lReader = new BufferedReader(new InputStreamReader(lConnection.getInputStream()));
+            HttpURLConnection lCon = params[0].setUpConnection();
+            lReader = new BufferedReader(new InputStreamReader(lCon.getInputStream()));
             StringBuilder lStringBuilder = new StringBuilder();
             String lLine = "";
-            while((lLine = lReader.readLine()) != null){
-                lStringBuilder.append(lLine);
+            while ((lLine = lReader.readLine()) != null){
+                lStringBuilder.append(lLine + "\n");
             }
             return lStringBuilder.toString();
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            if(lReader != null){
+                try {
+                    lReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return null;
     }
 

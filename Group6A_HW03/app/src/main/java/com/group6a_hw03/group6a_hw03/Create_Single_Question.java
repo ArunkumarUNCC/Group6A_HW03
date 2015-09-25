@@ -22,7 +22,7 @@ public class Create_Single_Question extends AppCompatActivity {
 
     public ImageView fAddAnswer, fSelectedImg;
     public EditText fQuestion, fAnswer;
-    public String fUriString, fImgUrl, fAnswerString;
+    public String fUriString, fImgUrl = "z", fAnswerString;
 
     public RadioGroup fAnswerGroup;
 
@@ -32,6 +32,10 @@ public class Create_Single_Question extends AppCompatActivity {
     public int fNumberAnswers;
     final static String fUPLOAD_PIC_URL = "http://dev.theappsdr.com/apis/trivia_fall15/uploadPhoto.php";
     final static String fSAVE_QUESTION_URL = "http://dev.theappsdr.com/apis/trivia_fall15/saveNew.php";
+    final static String fGROUP_ID = "356f512ffd7616a7f33d3a9bbb41e5b2";
+    final static String fGID = "gid";
+    final static String fQID = "q";
+    final static String fPHOTO_PARAM = "uploaded_file";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +101,38 @@ public class Create_Single_Question extends AppCompatActivity {
         }else if(fNumberAnswers < 2) {
             sendToast("Please enter at least 2 possible answers.");
         }else{
-            new saveQuestionAsyncTask(this).execute(fSAVE_QUESTION_URL, createQuestionString());
             //1. uploadPhoto API (Returns URL)
-//            new uploadPicAsyncTask(this).execute(fUPLOAD_PIC_URL, fUriString);
+//            RequestParams lParams = new RequestParams("POST", fUPLOAD_PIC_URL);
+//            lParams.addParam(fPHOTO_PARAM, fUriString);
+//            new GenericAsyncTask(this).execute(lParams);
+
             //2. Submit question content (with new URL)
+            RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
+            lParams.addParam(fGID, fGROUP_ID);
+            lParams.addParam(fQID, createQuestionString());
+            new GenericAsyncTask(this).execute(lParams);
+
+            finish();
         }
+    }
+
+    public String createQuestionString(){
+        String lTempString;
+
+        lTempString = fQuestion.getText().toString() + ";";
+        lTempString += fAnswerString;
+
+        if(fImgUrl == "-1" || fImgUrl == "z")
+            lTempString += ";";
+        else
+            lTempString += fImgUrl + ";";
+
+        lTempString += fAnswerGroup.getCheckedRadioButtonId() + ";";
+        return lTempString;
+    }
+
+    public void sendToast(String aString){
+        Toast.makeText(this, aString, fTOAST_LENGTH).show();
     }
 
     @Override
@@ -116,24 +147,5 @@ public class Create_Single_Question extends AppCompatActivity {
                     fSelectedImg.setImageURI(lSelectedImgUri);
             }
         }
-    }
-
-    public void sendToast(String aString){
-        Toast.makeText(this, aString, fTOAST_LENGTH).show();
-    }
-
-    public String createQuestionString(){
-        String lTempString;
-
-        lTempString = fQuestion.getText().toString() + ";";
-        lTempString += fAnswerString;
-
-//        if(fImgUrl.equals("-1"))
-//            lTempString += ";";
-//        else
-//            lTempString += fImgUrl + ";";
-        lTempString += fAnswerGroup.getCheckedRadioButtonId();
-
-        return lTempString;
     }
 }
