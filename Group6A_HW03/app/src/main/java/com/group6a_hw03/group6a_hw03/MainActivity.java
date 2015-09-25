@@ -5,7 +5,9 @@
 */
 package com.group6a_hw03.group6a_hw03;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,10 +62,24 @@ public class MainActivity extends AppCompatActivity implements GenericAsyncTask.
     }
 
     public void deleteQuestionsOnClick (View aView){
-        RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
-        lParams.addParam(fGID, fGROUP_ID);
-
-        new GenericAsyncTask(this, fDELETING).execute(lParams);
+        final Boolean[] lContinue = new Boolean[1];
+        lContinue[0] = false;
+        AlertDialog.Builder lAlert = new AlertDialog.Builder(this);
+        lAlert.setTitle("Delete Questions")
+                .setMessage("Are you sure you want to delete all your questions?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        lContinue[0] = true;
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setCancelable(false).show();
+        if(lContinue[0]){
+            RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
+            lParams.addParam(fGID, fGROUP_ID);
+            new GenericAsyncTask(this, fDELETING).execute(lParams);
+        }
     }
 
     public void exitAppOnClick (View aView){

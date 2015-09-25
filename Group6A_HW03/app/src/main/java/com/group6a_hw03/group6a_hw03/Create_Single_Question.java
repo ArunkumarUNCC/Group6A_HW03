@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-public class Create_Single_Question extends AppCompatActivity implements GenericAsyncTask.IData{
+public class Create_Single_Question extends AppCompatActivity implements GenericAsyncTask.IData {
 
     public ImageView fAddAnswer, fSelectedImg;
     public EditText fQuestion, fAnswer;
@@ -75,13 +75,13 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
         return super.onOptionsItemSelected(item);
     }
 
-    public void addAnswerOnClick (View aView){
+    public void addAnswerOnClick(View aView) {
         RadioButton lRadioAnswer = new RadioButton(this);
-        if(fAnswer.getText().toString().equals("")){
+        if (fAnswer.getText().toString().equals("")) {
             sendToast("Answer can't be blank, try again!");
-        }else{
+        } else {
             lRadioAnswer.setText(fAnswer.getText());
-            if(fAnswerString == null)
+            if (fAnswerString == null)
                 fAnswerString = fAnswer.getText().toString() + ";";
             else fAnswerString += fAnswer.getText().toString() + ";";
             fAnswerGroup.addView(lRadioAnswer);
@@ -91,18 +91,20 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
         }
     }
 
-    public void selectImageOnClick (View aView){
+    public void selectImageOnClick(View aView) {
         Intent lPictureIntent = new Intent(Intent.ACTION_PICK);
         lPictureIntent.setType("image/");
         startActivityForResult(lPictureIntent, fSELECT_PICTURE);
     }
 
-    public void submitQuestionOnClick (View aView){
-        if(fQuestion.getText().toString().equals("")){
+    public void submitQuestionOnClick(View aView) {
+        if (fQuestion.getText().toString().equals("")) {
             sendToast("Please add a question!");
-        }else if(fNumberAnswers < 2) {
+        } else if (fNumberAnswers < 2) {
             sendToast("Please enter at least 2 possible answers.");
-        }else{
+        } else if (fAnswerGroup.getCheckedRadioButtonId() == -1) {
+            sendToast("Please select an answer.");
+        } else {
             //1. uploadPhoto API (Returns URL)
 //            RequestParams lParams = new RequestParams("POST", fUPLOAD_PIC_URL);
 //            lParams.addParam(fPHOTO_PARAM, fUriString);
@@ -118,13 +120,13 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
         }
     }
 
-    public String createQuestionString(){
+    public String createQuestionString() {
         String lTempString;
 
         lTempString = fQuestion.getText().toString() + ";";
         lTempString += fAnswerString;
 
-        if(fImgUrl == "-1" || fImgUrl == "z")
+        if (fImgUrl == "-1" || fImgUrl == "z")
             lTempString += ";";
         else
             lTempString += fImgUrl + ";";
@@ -133,7 +135,7 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
         return lTempString;
     }
 
-    public void sendToast(String aString){
+    public void sendToast(String aString) {
         Toast.makeText(this, aString, fTOAST_LENGTH).show();
     }
 
@@ -141,8 +143,8 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
     protected void onActivityResult(int aRequestCode, int aResultCode, Intent aData) {
         super.onActivityResult(aRequestCode, aResultCode, aData);
         //sets imageView as the image selected
-        if(aResultCode == RESULT_OK){
-            switch (aRequestCode){
+        if (aResultCode == RESULT_OK) {
+            switch (aRequestCode) {
                 case fSELECT_PICTURE:
                     Uri lSelectedImgUri = aData.getData();
                     fUriString = lSelectedImgUri.toString();
