@@ -6,100 +6,138 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.group6a_hw03.group6a_hw03.Trivia_Activity">
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:id="@+id/imageViewLoadingImage"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_below="@+id/textViewQuestionNumber"-->
+        <!--android:layout_above="@+id/textViewQuestionText"-->
+        <!--/>-->
+
+    <!--<RadioGroup-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/radioGroupOptions"-->
+        <!--android:layout_above="@+id/buttonQuit"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_marginBottom="89dp">-->
+
+    <!--</RadioGroup>-->
+
+    <!--<Button-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/quitButton"-->
+        <!--android:id="@+id/buttonQuit"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:onClick="@string/quitOnClick" />-->
+
+    <!--<Button-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/nextButton"-->
+        <!--android:id="@+id/buttonNext"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:onClick="@string/nextOnClick" />-->
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="@string/questionText"-->
+        <!--android:id="@+id/textViewQuestionText"-->
+        <!--android:layout_above="@+id/radioGroupOptions"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true" />-->
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="@string/questionNumber"-->
+        <!--android:id="@+id/textViewQuestionNumber"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true" />-->
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageViewLoadingImage"
-        android:src="@android:drawable/star_big_on"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/textViewQuestionNumber"
-        android:layout_above="@+id/textViewQuestionText" />
+        android:id="@+id/relativeLayoutQuestionNumber">
 
-    <RadioGroup
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/questionNumber"
+            android:id="@+id/textViewQuestionNumber" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/relativeLayoutImageDim"
+        android:layout_below="@id/relativeLayoutQuestionNumber"
+        android:id="@+id/relativeLayoutImage">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageViewLoadingImage"
+            android:src="@mipmap/ic_launcher" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBarLoadImage"
+            style="@style/Base.Widget.AppCompat.DropDownItem.Spinner"
+            android:indeterminate="false"
+            android:visibility="visible"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonQuit"
-        android:layout_alignRight="@+id/buttonNext"
-        android:layout_alignEnd="@+id/buttonNext"
-        android:id="@+id/radioGroup">
+        android:id="@+id/linearLayoutQuestionText"
+        android:layout_below="@id/relativeLayoutImage">
 
-        <RadioButton
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/questionOne"
-            android:id="@+id/radioButtonAnswer1"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/questionText"
+            android:id="@+id/textViewQuestionText" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/questionTwo"
-            android:id="@+id/radioButtonAnswer2"
-            android:layout_alignTop="@+id/radioButtonAnswer1"
-            android:layout_alignRight="@+id/radioButtonAnswer1"
-            android:layout_alignEnd="@+id/radioButtonAnswer1" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/questionThree"
-            android:id="@+id/radioButtonAnswer3"
-            android:layout_below="@+id/radioButtonAnswer2"
-            android:layout_alignRight="@+id/radioButtonAnswer2"
-            android:layout_alignEnd="@+id/radioButtonAnswer2" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/questionFour"
-            android:id="@+id/radioButtonAnswer4"
-            android:layout_below="@+id/radioButtonAnswer3"
-            android:layout_alignRight="@+id/radioButtonAnswer3"
-            android:layout_alignEnd="@+id/radioButtonAnswer3" />
-
-    </RadioGroup>
+            android:id="@+id/radioGroupOptions"></RadioGroup>
+    </LinearLayout>
 
     <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="@string/quitButton"
-        android:id="@+id/buttonQuit"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="@string/quitOnClick" />
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:text="@string/quitButton"
+    android:id="@+id/buttonQuit"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:onClick="@string/quitOnClick" />
 
     <Button
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="@string/nextButton"
-        android:id="@+id/buttonNext"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="@string/nextOnClick" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/questionText"
-        android:id="@+id/textViewQuestionText"
-        android:layout_above="@+id/radioGroup"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/questionNumber"
-        android:id="@+id/textViewQuestionNumber"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:text="@string/nextButton"
+    android:id="@+id/buttonNext"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    android:onClick="@string/nextOnClick" />
 </RelativeLayout>
