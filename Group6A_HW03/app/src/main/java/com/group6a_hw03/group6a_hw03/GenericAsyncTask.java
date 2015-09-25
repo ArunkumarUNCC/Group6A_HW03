@@ -2,6 +2,7 @@ package com.group6a_hw03.group6a_hw03;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,17 +13,23 @@ import java.net.HttpURLConnection;
 public class GenericAsyncTask extends AsyncTask<RequestParams, Integer, String> {
     ProgressDialog fProgress;
     Create_Single_Question fQuestionActivity;
+    IData fActivity;
+    String fProgressMessage;
 
-    public GenericAsyncTask(Create_Single_Question aQuestionActivity) {
-        this.fQuestionActivity = aQuestionActivity;
+//    public GenericAsyncTask(Create_Single_Question aQuestionActivity) {
+//        this.fQuestionActivity = aQuestionActivity;
+//    }
+    public GenericAsyncTask(IData aActivity, String aString) {
+        this.fActivity = aActivity;
+        this.fProgressMessage = aString;
     }
     @Override
     protected void onPreExecute() {
-        fProgress = new ProgressDialog(fQuestionActivity);
+        fProgress = new ProgressDialog((Context) fActivity);
         fProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         fProgress.setMax(100);
         fProgress.setCancelable(false);
-        fProgress.setMessage("Uploading Question...");
+        fProgress.setMessage(fProgressMessage);
         fProgress.show();
         super.onPreExecute();
     }
@@ -57,8 +64,12 @@ public class GenericAsyncTask extends AsyncTask<RequestParams, Integer, String> 
 
     @Override
     protected void onPostExecute(String s) {
-        super.onPostExecute(s);
+        super.onPostExecute(s);;
         fProgress.dismiss();
 
+    }
+
+    public interface IData{
+        Context getContext();
     }
 }

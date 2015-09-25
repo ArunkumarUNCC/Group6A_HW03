@@ -1,5 +1,6 @@
 package com.group6a_hw03.group6a_hw03;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +19,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-public class Create_Single_Question extends AppCompatActivity {
+public class Create_Single_Question extends AppCompatActivity implements GenericAsyncTask.IData{
 
     public ImageView fAddAnswer, fSelectedImg;
     public EditText fQuestion, fAnswer;
@@ -30,6 +31,7 @@ public class Create_Single_Question extends AppCompatActivity {
     final static int fTOAST_LENGTH = Toast.LENGTH_LONG;
 
     public int fNumberAnswers;
+    final static String fUPLOADING = "Uploading question...";
     final static String fUPLOAD_PIC_URL = "http://dev.theappsdr.com/apis/trivia_fall15/uploadPhoto.php";
     final static String fSAVE_QUESTION_URL = "http://dev.theappsdr.com/apis/trivia_fall15/saveNew.php";
     final static String fGROUP_ID = "356f512ffd7616a7f33d3a9bbb41e5b2";
@@ -110,7 +112,7 @@ public class Create_Single_Question extends AppCompatActivity {
             RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
             lParams.addParam(fQID, createQuestionString());
             lParams.addParam(fGID, fGROUP_ID);
-            new GenericAsyncTask(this).execute(lParams);
+            new GenericAsyncTask(this, fUPLOADING).execute(lParams);
 
             finish();
         }
@@ -147,5 +149,10 @@ public class Create_Single_Question extends AppCompatActivity {
                     fSelectedImg.setImageURI(lSelectedImgUri);
             }
         }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }

@@ -5,6 +5,7 @@
 */
 package com.group6a_hw03.group6a_hw03;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,11 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GenericAsyncTask.IData{
 
     final static String fUPLOAD_DELETE_URL = "http://dev.theappsdr.com/apis/trivia_fall15/deleteAll.php";
     final static String fGROUP_ID = "356f512ffd7616a7f33d3a9bbb41e5b2";
     final static String fGID = "gid";
+    final static String fDELETING = "Deleting all questions...";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,16 @@ public class MainActivity extends AppCompatActivity {
     public void deleteQuestionsOnClick (View aView){
         RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
         lParams.addParam(fGID, fGROUP_ID);
+
+        new GenericAsyncTask(this, fDELETING).execute(lParams);
     }
 
     public void exitAppOnClick (View aView){
         finish();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }
