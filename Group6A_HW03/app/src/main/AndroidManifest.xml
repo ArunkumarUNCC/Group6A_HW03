@@ -33,6 +33,10 @@
         <activity
             android:name=".Create_Single_Question"
             android:label="@string/title_activity_create__single__question" >
+            <intent-filter>
+                <action android:name="com.group6a_hw03.group6a_hw03.intent.action.CREATE_QUESTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 
