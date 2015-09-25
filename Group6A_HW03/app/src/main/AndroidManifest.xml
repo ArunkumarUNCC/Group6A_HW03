@@ -29,6 +29,10 @@
         <activity
             android:name=".Results_Activity"
             android:label="@string/title_activity_results_" >
+            <intent-filter>
+                <action android:name="com.group6a_hw03.group6a_hw03.intent.action.TEST_RESULT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Create_Single_Question"

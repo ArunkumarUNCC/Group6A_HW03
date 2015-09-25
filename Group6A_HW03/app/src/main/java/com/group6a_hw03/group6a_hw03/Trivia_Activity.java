@@ -2,11 +2,13 @@ package com.group6a_hw03.group6a_hw03;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.service.carrier.CarrierIdentifier;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,6 +52,7 @@ public class Trivia_Activity extends AppCompatActivity {
     private static int fCorrectAnswersCount;
     private final String GROUPID = "356f512ffd7616a7f33d3a9bbb41e5b2";
     private final String CHECKANSWER = "http://dev.theappsdr.com/apis/trivia_fall15/checkAnswer.php";
+    public static String RESULT_FLAG = "Test Rsults";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +133,7 @@ public class Trivia_Activity extends AppCompatActivity {
                     lOption = new LinkedList<String>();
                     String[] lParsedQuestion = lQuestionRef.split(";",-1);
 
-                    int i = 0;
+                    int i;
                     for(i=2 ; i<lParsedQuestion.length-2 ; i++){
                         lOption.add(lParsedQuestion[i]);
                     }
@@ -167,7 +170,7 @@ public class Trivia_Activity extends AppCompatActivity {
     }
 
     class getImage extends AsyncTask<String,Void,Bitmap>{
-        protected InputStream in = null;
+        protected InputStream image = null;
 
         @Override
         protected void onPreExecute() {
@@ -183,10 +186,9 @@ public class Trivia_Activity extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
-                in = connection.getInputStream();
-                Bitmap image = BitmapFactory.decodeStream(in);
+                image = connection.getInputStream();
 
-                return image;
+                return BitmapFactory.decodeStream(image);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (ProtocolException e) {
@@ -210,9 +212,20 @@ public class Trivia_Activity extends AppCompatActivity {
 
     public void nextOnClick (View aView){
         if(connectedOnline()) {
-            new GetCorrectAnswer().execute(new GetAnswer(fOptions.getCheckedRadioButtonId(),
-                    fQuestionData.get(fCurrentQuestion).getfQuestionId()));
-            displayDetails();
+            //Chnage 10 to fQuestionData.size()-1
+            if (fCurrentQuestion == 4){
+                Intent lTestResult = new Intent("com.group6a_hw03.group6a_hw03.intent.action.TEST_RESULT");
+                Bundle lTestData = new Bundle();
+                lTestData.putIntArray(RESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
+                lTestResult.putExtra(RESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
+                startActivity(lTestResult);
+                quitActivity();
+            }
+            else {
+                new GetCorrectAnswer().execute(new GetAnswer(fOptions.getCheckedRadioButtonId(),
+                        fQuestionData.get(fCurrentQuestion).getfQuestionId()));
+                displayDetails();
+            }
         }
     }
 
@@ -251,13 +264,18 @@ public class Trivia_Activity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if(result.equals("1")) {
-                showToast("Correct Answer");
-                fCorrectAnswersCount++;
+            switch (result) {
+                case "1":
+                    showToast("Correct Answer");
+                    fCorrectAnswersCount++;
+                    break;
+                case "0":
+                    showToast("Wrong Answer");
+                    break;
+                default:
+                    showToast("FATAL ERROR");
+                    break;
             }
-            else if (result.equals("0"))
-                showToast("Wrong Answer");
-            else showToast("FATAL ERROR");
         }
     }
 
