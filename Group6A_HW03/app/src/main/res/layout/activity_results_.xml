@@ -74,7 +74,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="100%"
             android:id="@+id/textViewPercentCorrect"
             android:layout_below="@+id/textViewCorrectAnswers"
             android:layout_alignParentLeft="true"

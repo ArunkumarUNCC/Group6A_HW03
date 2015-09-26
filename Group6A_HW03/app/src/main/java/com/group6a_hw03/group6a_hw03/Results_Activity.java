@@ -16,12 +16,15 @@ public class Results_Activity extends AppCompatActivity {
     public TextView fProgressPercent;
     public TextView fMoreText;
 
+    private final String fGO_TO_TEST = "com.group6a_hw03.group6a_hw03.intent.action.VIEW";
+    private final String fPercentage = " %";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_);
 
-        int[] lTestResults = getIntent().getExtras().getIntArray(Trivia_Activity.RESULT_FLAG);
+        int[] lTestResults = getIntent().getExtras().getIntArray(Trivia_Activity.fRESULT_FLAG);
 //        Integer[] lTestResults = lIntentResult.getIntArray(Trivia_Activity.RESULT_FLAG);
         //Toast.makeText(Results_Activity.this,lTestResults.length,Toast.LENGTH_LONG).show();
 
@@ -32,7 +35,7 @@ public class Results_Activity extends AppCompatActivity {
         assert lTestResults != null;
         int lpercentCorret = (lTestResults[0]/lTestResults[1])/100;
 
-        fProgressPercent.setText(lpercentCorret + " %");
+        fProgressPercent.setText(lpercentCorret + fPercentage);
         fCorrectProgress.setProgress(lpercentCorret);
     }
 
@@ -59,7 +62,7 @@ public class Results_Activity extends AppCompatActivity {
     }
 
     public void tryAgainOnClick (View aView){
-        Intent lStartTrivia = new Intent("com.group6a_hw03.group6a_hw03.intent.action.VIEW");
+        Intent lStartTrivia = new Intent(fGO_TO_TEST);
         startActivity(lStartTrivia);
         finish();
     }

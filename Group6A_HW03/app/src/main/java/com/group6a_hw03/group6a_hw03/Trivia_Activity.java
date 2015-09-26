@@ -42,17 +42,25 @@ public class Trivia_Activity extends AppCompatActivity {
     private static TextView fQuestionNumber,fQuestionText;
     private static ImageView fQuestionImage;
     private static RadioGroup fOptions;
-    private static RadioButton fAnswerOne, fAnswerTwo;
     private static ProgressBar fLoadImage;
-    private static ProgressDialog fActivityLoadProgress;
 
     static ArrayList<Question> fQuestionData;
-
     private static int fCurrentQuestion;
     private static int fCorrectAnswersCount;
-    private final String GROUPID = "356f512ffd7616a7f33d3a9bbb41e5b2";
-    private final String CHECKANSWER = "http://dev.theappsdr.com/apis/trivia_fall15/checkAnswer.php";
-    public static String RESULT_FLAG = "Test Rsults";
+
+    private final String fGROUPID = "356f512ffd7616a7f33d3a9bbb41e5b2";
+    private final String fGETQUESTIONS = "http://dev.theappsdr.com/apis/trivia_fall15/getAll.php";
+    private final String fCHECKANSWER = "http://dev.theappsdr.com/apis/trivia_fall15/checkAnswer.php";
+    private final String fDEFAULT_IMAGE = "http://www.bidhannagarmunicipality.org/uploaded_files/55966fba7a6d307032015164922.gif";
+    private final String fGO_TO_RESULT = "com.group6a_hw03.group6a_hw03.intent.action.TEST_RESULT";
+    private final String fGET = "GET";
+    private final String fPOST = "POST";
+    private final String fLOADQUESTIONS_PROGRESSBAR_LABEL = "Loading Questions...";
+    private final String fGID = "gid";
+    private final String fQID = "qid";
+    private final String fA = "a";
+    private final String fQ = "Q ";
+    public static String fRESULT_FLAG = "Test Rsults";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,14 +73,13 @@ public class Trivia_Activity extends AppCompatActivity {
             fQuestionImage = (ImageView) findViewById(R.id.imageViewLoadingImage);
             fLoadImage = (ProgressBar) findViewById(R.id.progressBarLoadImage);
             fOptions = (RadioGroup) findViewById(R.id.radioGroupOptions);
-//            fAnswerOne = (RadioButton) findViewById(R.id.radioButtonAnswer1);
-//            fAnswerTwo = (RadioButton) findViewById(R.id.radioButtonAnswer2);
 
             fCurrentQuestion = -1;
             fCorrectAnswersCount = 0;
             fQuestionData = new ArrayList<Question>();
 
-            new getQuestion().execute("http://dev.theappsdr.com/apis/trivia_fall15/getAll.php");
+            RequestParams lParams = new RequestParams(fGET,fGETQUESTIONS);
+            new GetQuestion().execute(lParams);
 
         }
         else quitActivity();
@@ -101,8 +108,9 @@ public class Trivia_Activity extends AppCompatActivity {
     }
 
     //AsyncTask to return array of Question objects
-    private class getQuestion extends AsyncTask<String, Void, ArrayList<Question>> {
-        protected BufferedReader reader=null;
+    private class GetQuestion extends AsyncTask<RequestParams, Void, ArrayList<Question>> {
+        protected BufferedReader lReader=null;
+        ProgressDialog fActivityLoadProgress;
 
         @Override
         protected void onPreExecute() {
@@ -111,25 +119,24 @@ public class Trivia_Activity extends AppCompatActivity {
             fActivityLoadProgress = new ProgressDialog(Trivia_Activity.this);
             fActivityLoadProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             fActivityLoadProgress.setCancelable(false);
-            fActivityLoadProgress.setMessage("Loading Questions...");
+            fActivityLoadProgress.setMessage(fLOADQUESTIONS_PROGRESSBAR_LABEL);
             fActivityLoadProgress.show();
         }
 
         @Override
-        protected ArrayList<Question> doInBackground(String... params) {
+        protected ArrayList<Question> doInBackground(RequestParams... params) {
             try {
-                URL url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
 
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                HttpURLConnection connection = params[0].setUpConnection();
+
+                lReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String lQuestionRef = "";
                 LinkedList<String> lOption;
 
                 ArrayList<Question> lQuestions = new ArrayList<Question>();
 
-                while((lQuestionRef = reader.readLine())!=null){
+                while((lQuestionRef = lReader.readLine())!=null){
                     lOption = new LinkedList<String>();
                     String[] lParsedQuestion = lQuestionRef.split(";",-1);
 
@@ -146,6 +153,14 @@ public class Trivia_Activity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if(lReader != null){
+                    try {
+                        lReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             return null;
@@ -169,8 +184,9 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
-    class getImage extends AsyncTask<String,Void,Bitmap>{
-        protected InputStream image = null;
+    //Sets the image bitmap
+    class GetImage extends AsyncTask<RequestParams,Void,Bitmap>{
+        protected InputStream lImage = null;
 
         @Override
         protected void onPreExecute() {
@@ -180,21 +196,28 @@ public class Trivia_Activity extends AppCompatActivity {
         }
 
         @Override
-        protected Bitmap doInBackground(String... params) {
+        protected Bitmap doInBackground(RequestParams... params) {
             try {
-                URL url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
 
-                image = connection.getInputStream();
+                HttpURLConnection connection = params[0].setUpConnection();
 
-                return BitmapFactory.decodeStream(image);
+                lImage = connection.getInputStream();
+
+                return BitmapFactory.decodeStream(lImage);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (ProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if(lImage != null){
+                    try {
+                        lImage.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             return null;
@@ -212,42 +235,39 @@ public class Trivia_Activity extends AppCompatActivity {
 
     public void nextOnClick (View aView){
         if(connectedOnline()) {
-            //Chnage 10 to fQuestionData.size()-1
+            //Change 10 to fQuestionData.size()-1
             if (fCurrentQuestion == 4){
-                Intent lTestResult = new Intent("com.group6a_hw03.group6a_hw03.intent.action.TEST_RESULT");
+                Intent lTestResult = new Intent(fGO_TO_RESULT);
                 Bundle lTestData = new Bundle();
-                lTestData.putIntArray(RESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
-                lTestResult.putExtra(RESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
+                lTestData.putIntArray(fRESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
+                lTestResult.putExtra(fRESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
                 startActivity(lTestResult);
                 quitActivity();
             }
             else {
-                new GetCorrectAnswer().execute(new GetAnswer(fOptions.getCheckedRadioButtonId(),
-                        fQuestionData.get(fCurrentQuestion).getfQuestionId()));
+                RequestParams lParams = new RequestParams(fPOST,fCHECKANSWER);
+                lParams.addParam(fGID,fGROUPID);
+                lParams.addParam(fQID,fQuestionData.get(fCurrentQuestion).getfQuestionId());
+                lParams.addParam(fA, String.valueOf(fOptions.getCheckedRadioButtonId()));
+                new GetCorrectAnswer().execute(lParams);
                 displayDetails();
             }
         }
     }
 
-    class GetCorrectAnswer extends AsyncTask<GetAnswer,Void,String>{
+    //Checks whether the answer is correct or not
+    class GetCorrectAnswer extends AsyncTask<RequestParams,Void,Integer>{
         BufferedReader reader = null;
 
         @Override
-        protected String doInBackground(GetAnswer... params) {
+        protected Integer doInBackground(RequestParams... params) {
             try {
-                URL url = new URL(CHECKANSWER);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setDoOutput(true);
 
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write("gid="+ URLEncoder.encode(GROUPID,"UTF-8")+"&qid="+URLEncoder.encode(params[0].getQuestionId(),"UTF-8")
-                        +"&a="+URLEncoder.encode(String.valueOf(params[0].getAnswer()),"UTF-8"));
-                writer.flush();
+                HttpURLConnection connection = params[0].setUpConnection();
 
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                return reader.readLine();
+                return Integer.valueOf(reader.readLine());
 
 
             } catch (MalformedURLException e) {
@@ -261,15 +281,15 @@ public class Trivia_Activity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
 
             switch (result) {
-                case "1":
+                case 1:
                     showToast("Correct Answer");
                     fCorrectAnswersCount++;
                     break;
-                case "0":
+                case 0:
                     showToast("Wrong Answer");
                     break;
                 default:
@@ -303,13 +323,16 @@ public class Trivia_Activity extends AppCompatActivity {
 
     private void displayDetails(){
         fCurrentQuestion++;
-        fQuestionNumber.setText("Q " + (fCurrentQuestion + 1));
+        fQuestionNumber.setText(fQ + (fCurrentQuestion + 1));
 
         if(connectedOnline()) {
+            RequestParams lParams;
             if (fQuestionData.get(fCurrentQuestion).getfImageLinks().isEmpty()) {
-                new getImage().execute("http://www.bidhannagarmunicipality.org/uploaded_files/55966fba7a6d307032015164922.gif");
+                lParams = new RequestParams(fGET,fDEFAULT_IMAGE);
+                new GetImage().execute(lParams);
             } else {
-                new getImage().execute(fQuestionData.get(fCurrentQuestion).getfImageLinks());
+                lParams = new RequestParams(fGET,fQuestionData.get(fCurrentQuestion).getfImageLinks());
+                new GetImage().execute(lParams);
             }
         }
 

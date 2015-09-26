@@ -27,7 +27,7 @@
     <string name="tryAgainButton">Try Again</string>
     <string name="trivaResults">Trivia Results</string>
     <string name="correctAnswers">Correct Answers</string>
-    <string name="moreText">Here is some more information about how you did!</string>
+    <string name="moreText">Try again and see if you can get all the correct answers!</string>
     <string name="tryAgainOnClick">tryAgainOnClick</string>
     <string name="title_activity_create__single__question">Create Question Activity</string>
     <string name="addAnswerOnClick">addAnswerOnClick</string>
