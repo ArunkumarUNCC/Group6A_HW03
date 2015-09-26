@@ -107,6 +107,8 @@ public class Trivia_Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     //AsyncTask to return array of Question objects
     private class GetQuestion extends AsyncTask<RequestParams, Void, ArrayList<Question>> {
         protected BufferedReader lReader=null;
@@ -140,16 +142,50 @@ public class Trivia_Activity extends AppCompatActivity {
                     lOption = new LinkedList<String>();
                     String[] lParsedQuestion = lQuestionRef.split(";",-1);
 
-                    int i;
-                    for(i=2 ; i<lParsedQuestion.length-2 ; i++){
-                        lOption.add(lParsedQuestion[i]);
+                    try {
+                        //Handling Exceptions for the received questions
+                        //For Empty Question
+                        if (lParsedQuestion[1].isEmpty()){
+                            throw new InValidQuestionException("Missing Question",lParsedQuestion[0]);
+                        }
+
+                        int i;
+                        for(i=2 ; i<lParsedQuestion.length-2 ; i++){
+                            //For Empty Options
+                            if(lParsedQuestion[i].isEmpty())
+                                throw new InValidQuestionException("Empty Option",lParsedQuestion[0]);
+
+                            else
+                                lOption.add(lParsedQuestion[i]);
+                        }
+
+                        //For many options
+                        if(i>8)
+                            throw new InValidQuestionException("Too many options!",lParsedQuestion[0]);
+
+                        if (!lParsedQuestion[i].isEmpty()) {
+                            //Handling URL Exception
+                            URL lCheckUrlException = new URL(lParsedQuestion[i]);
+                        }
+
+                        //Creating Question object if all values are valid
+                        lQuestions.add(new Question(lParsedQuestion[0], lParsedQuestion[1],
+                                lOption, lParsedQuestion[i]));
+
+                    } catch (InValidQuestionException e) {
+                        Log.d("Question " + e.getExceptionQuestion() + " not added to the test due to:", e.getExceptionReason());
+//                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        Log.d("Question  not added to the test due to:", "Invalid URL");
+//                        e.printStackTrace();
+                    } catch (IOException e) {
+                        Log.d("Question  not added to the test due to:","Invalid URL");
+//                        e.printStackTrace();
                     }
 
-                    lQuestions.add(new Question(lParsedQuestion[0], lParsedQuestion[1],
-                            lOption, lParsedQuestion[i]));
                 }
                 return lQuestions;
-            } catch (MalformedURLException e) {
+            }  catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -168,6 +204,7 @@ public class Trivia_Activity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Question> question) {
+            //Returns arraylist of Question objects if the list is not empty
             super.onPostExecute(question);
             fActivityLoadProgress.dismiss();
 
@@ -178,13 +215,16 @@ public class Trivia_Activity extends AppCompatActivity {
                 quitActivity();
             }
             else {
-
+                showToast("Total Questions:"+String.valueOf(fQuestionData.size()));
                 displayDetails();
             }
         }
+
     }
 
-    //Sets the image bitmap
+
+
+    //AsyncTask to set the image bitmaps
     class GetImage extends AsyncTask<RequestParams,Void,Bitmap>{
         protected InputStream lImage = null;
 
@@ -225,6 +265,7 @@ public class Trivia_Activity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap questionImage) {
+            //Sets the image view
             super.onPostExecute(questionImage);
             fLoadImage.setVisibility(View.INVISIBLE);
 
@@ -233,14 +274,16 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
+
+    //Function for clicking Next Button
     public void nextOnClick (View aView){
         if(connectedOnline()) {
-            //Change 10 to fQuestionData.size()-1
-            if (fCurrentQuestion == 4){
+            fQuestionImage.setImageResource(0);
+            //Checks if the current question is last or not
+            if (fCurrentQuestion == fQuestionData.size()-1){
                 Intent lTestResult = new Intent(fGO_TO_RESULT);
-                Bundle lTestData = new Bundle();
-                lTestData.putIntArray(fRESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
                 lTestResult.putExtra(fRESULT_FLAG,new int[]{fCorrectAnswersCount,fQuestionData.size()});
+
                 startActivity(lTestResult);
                 quitActivity();
             }
@@ -255,9 +298,10 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
-    //Checks whether the answer is correct or not
+
+    //AsyncTask to check whether the answer is correct or not
     class GetCorrectAnswer extends AsyncTask<RequestParams,Void,Integer>{
-        BufferedReader reader = null;
+        BufferedReader lReader = null;
 
         @Override
         protected Integer doInBackground(RequestParams... params) {
@@ -265,9 +309,9 @@ public class Trivia_Activity extends AppCompatActivity {
 
                 HttpURLConnection connection = params[0].setUpConnection();
 
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                lReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                return Integer.valueOf(reader.readLine());
+                return Integer.valueOf(lReader.readLine());
 
 
             } catch (MalformedURLException e) {
@@ -276,6 +320,14 @@ public class Trivia_Activity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if(lReader != null){
+                    try {
+                        lReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return null;
         }
@@ -286,7 +338,7 @@ public class Trivia_Activity extends AppCompatActivity {
 
             switch (result) {
                 case 1:
-                    showToast("Correct Answer");
+                    showToast("Correct Answer:");
                     fCorrectAnswersCount++;
                     break;
                 case 0:
@@ -299,10 +351,13 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
+
+    //Function for clicking Quit button
     public void quitOnClick (View aView){
         quitActivity();
     }
 
+    //Function to check whether the internet connection is available or not
     private boolean connectedOnline(){
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
@@ -317,14 +372,18 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
+    //Function to quit the activity
     public void quitActivity(){
         finish();
     }
 
+
+    //Function to display all the views in the current activity
     private void displayDetails(){
         fCurrentQuestion++;
         fQuestionNumber.setText(fQ + (fCurrentQuestion + 1));
 
+        //To download and set the image
         if(connectedOnline()) {
             RequestParams lParams;
             if (fQuestionData.get(fCurrentQuestion).getfImageLinks().isEmpty()) {
@@ -336,6 +395,7 @@ public class Trivia_Activity extends AppCompatActivity {
             }
         }
 
+        //To set the question text and options
         fQuestionText.setText(fQuestionData.get(fCurrentQuestion).getfQuestions());
 
         ListIterator<String> lOptionsIterator = fQuestionData.get(fCurrentQuestion).getfRadioGroupOptions().listIterator();
@@ -348,6 +408,8 @@ public class Trivia_Activity extends AppCompatActivity {
         }
     }
 
+
+    //Function to display all Toast messages
     public void showToast(String displayThis){
         Toast.makeText(Trivia_Activity.this,displayThis,Toast.LENGTH_SHORT).show();
     }
