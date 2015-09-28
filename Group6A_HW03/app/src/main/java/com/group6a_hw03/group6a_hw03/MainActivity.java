@@ -9,11 +9,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements GenericAsyncTask.IData{
 
@@ -62,24 +65,29 @@ public class MainActivity extends AppCompatActivity implements GenericAsyncTask.
     }
 
     public void deleteQuestionsOnClick (View aView){
-        final Boolean[] lContinue = new Boolean[1];
-        lContinue[0] = false;
+//        final Boolean[] lContinue = new Boolean[1];
+//        lContinue[0] = false;
         AlertDialog.Builder lAlert = new AlertDialog.Builder(this);
         lAlert.setTitle("Delete Questions")
                 .setMessage("Are you sure you want to delete all your questions?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        lContinue[0] = true;
+                        //lContinue[0] = true;
+                        if (connectedOnline()) {
+                            RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
+                            lParams.addParam(fGID, fGROUP_ID);
+                            new GenericAsyncTask(MainActivity.this, fDELETING).execute(lParams);
+                        }
                     }
                 })
                 .setNegativeButton("No", null)
                 .setCancelable(false).show();
-        if(lContinue[0]){
-            RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
-            lParams.addParam(fGID, fGROUP_ID);
-            new GenericAsyncTask(this, fDELETING).execute(lParams);
-        }
+//        if(lContinue[0]){
+//            RequestParams lParams = new RequestParams("POST", fUPLOAD_DELETE_URL);
+//            lParams.addParam(fGID, fGROUP_ID);
+//            new GenericAsyncTask(this, fDELETING).execute(lParams);
+//        }
     }
 
     public void exitAppOnClick (View aView){
@@ -89,5 +97,19 @@ public class MainActivity extends AppCompatActivity implements GenericAsyncTask.
     @Override
     public Context getContext() {
         return this;
+    }
+
+    private boolean connectedOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        if(info!=null && info.isConnected()){
+            return true;
+        }
+        else{
+
+            Toast.makeText(MainActivity.this,"Internet Not Connected",Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

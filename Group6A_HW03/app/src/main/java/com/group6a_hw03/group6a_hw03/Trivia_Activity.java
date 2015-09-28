@@ -160,7 +160,7 @@ public class Trivia_Activity extends AppCompatActivity {
                         }
 
                         //For many options
-                        if(i>8)
+                        if(i>9)
                             throw new InValidQuestionException("Too many options!",lParsedQuestion[0]);
 
                         if (!lParsedQuestion[i].isEmpty()) {
@@ -215,7 +215,7 @@ public class Trivia_Activity extends AppCompatActivity {
                 quitActivity();
             }
             else {
-                showToast("Total Questions:"+String.valueOf(fQuestionData.size()));
+
                 displayDetails();
             }
         }
@@ -338,7 +338,7 @@ public class Trivia_Activity extends AppCompatActivity {
 
             switch (result) {
                 case 1:
-                    showToast("Correct Answer:");
+                    showToast("Correct Answer");
                     fCorrectAnswersCount++;
                     break;
                 case 0:
@@ -380,8 +380,13 @@ public class Trivia_Activity extends AppCompatActivity {
 
     //Function to display all the views in the current activity
     private void displayDetails(){
+        RadioButton lOption;
+        ListIterator<String> lOptionsIterator;
+
         fCurrentQuestion++;
         fQuestionNumber.setText(fQ + (fCurrentQuestion + 1));
+
+
 
         //To download and set the image
         if(connectedOnline()) {
@@ -398,14 +403,16 @@ public class Trivia_Activity extends AppCompatActivity {
         //To set the question text and options
         fQuestionText.setText(fQuestionData.get(fCurrentQuestion).getfQuestions());
 
-        ListIterator<String> lOptionsIterator = fQuestionData.get(fCurrentQuestion).getfRadioGroupOptions().listIterator();
+        lOptionsIterator = fQuestionData.get(fCurrentQuestion).getfRadioGroupOptions().listIterator();
         fOptions.removeAllViews();
         while(lOptionsIterator.hasNext()){
-            RadioButton lOption = new RadioButton(Trivia_Activity.this);
+            lOption = new RadioButton(Trivia_Activity.this);
             lOption.setText(lOptionsIterator.next());
-            lOption.setId(lOptionsIterator.nextIndex());
+            lOption.setTag(lOptionsIterator.nextIndex());
             fOptions.addView(lOption);
         }
+
+        //Toast.makeText(Trivia_Activity.this,fOptions.getCheckedRadioButtonId()+"",Toast.LENGTH_SHORT).show();
     }
 
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -78,8 +80,10 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
     public void addAnswerOnClick(View aView) {
         RadioButton lRadioAnswer = new RadioButton(this);
         if (fAnswer.getText().toString().equals("")) {
-            sendToast("Answer can't be blank, try again!");
-        } else {
+                sendToast("Answer can't be blank, try again!");
+        } else if (fNumberAnswers > 6){
+            sendToast("You have reached maximum number of answers");
+        } else{
             lRadioAnswer.setText(fAnswer.getText());
             if (fAnswerString == null)
                 fAnswerString = fAnswer.getText().toString() + ";";
@@ -111,12 +115,14 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
 //            new GenericAsyncTask(this).execute(lParams);
 
             //2. Submit question content (with new URL)
-            RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
-            lParams.addParam(fQID, createQuestionString());
-            lParams.addParam(fGID, fGROUP_ID);
-            new GenericAsyncTask(this, fUPLOADING).execute(lParams);
+            if(connectedOnline()) {
+                RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
+                lParams.addParam(fQID, createQuestionString());
+                lParams.addParam(fGID, fGROUP_ID);
+                new GenericAsyncTask(this, fUPLOADING).execute(lParams);
 
-            finish();
+                finish();
+            }
         }
     }
 
@@ -156,5 +162,19 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
     @Override
     public Context getContext() {
         return this;
+    }
+
+    private boolean connectedOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        if(info!=null && info.isConnected()){
+            return true;
+        }
+        else{
+
+            sendToast("Internet Not Connected");
+            return false;
+        }
     }
 }
