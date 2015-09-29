@@ -2,14 +2,17 @@ package com.group6a_hw03.group6a_hw03;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +22,22 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Create_Single_Question extends AppCompatActivity implements GenericAsyncTask.IData {
 
     public ImageView fAddAnswer, fSelectedImg;
     public EditText fQuestion, fAnswer;
-    public String fUriString, fImgUrl = "z", fAnswerString;
+    public String fUriString,  fAnswerString;
+    public static String fImgUrl = "z";
 
     public RadioGroup fAnswerGroup;
 
@@ -109,19 +121,20 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
         } else if (fAnswerGroup.getCheckedRadioButtonId() == -1) {
             sendToast("Please select an answer.");
         } else {
-            //1. uploadPhoto API (Returns URL)
-//            RequestParams lParams = new RequestParams("POST", fUPLOAD_PIC_URL);
-//            lParams.addParam(fPHOTO_PARAM, fUriString);
-//            new GenericAsyncTask(this).execute(lParams);
-
-            //2. Submit question content (with new URL)
             if(connectedOnline()) {
-                RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
-                lParams.addParam(fQID, createQuestionString());
-                lParams.addParam(fGID, fGROUP_ID);
-                new GenericAsyncTask(this, fUPLOADING).execute(lParams);
+                RequestParams lParams;
+                //1. uploadPhoto API (Returns URL)
+                lParams = new RequestParams("POST", fUPLOAD_PIC_URL);
+                new UploadeImageAsyncTask(fUriString).execute(lParams);
 
-                finish();
+                //2. Submit question content (with new URL)
+
+//                lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
+//                lParams.addParam(fQID, createQuestionString());
+//                lParams.addParam(fGID, fGROUP_ID);
+//                new GenericAsyncTask(this, fUPLOADING).execute(lParams);
+//
+//                finish();
             }
         }
     }
@@ -153,7 +166,22 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
             switch (aRequestCode) {
                 case fSELECT_PICTURE:
                     Uri lSelectedImgUri = aData.getData();
-                    fUriString = lSelectedImgUri.toString();
+
+                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                    // Get the cursor
+                    Cursor cursor = getContentResolver().query(lSelectedImgUri,
+                            filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    cursor.moveToFirst();
+                    fUriString = cursor.getString(columnIndex);
+
+                    cursor.close();
+
+//                    fUriString = lSelectedImgUri.toString();
                     fSelectedImg.setImageURI(lSelectedImgUri);
             }
         }
@@ -175,6 +203,109 @@ public class Create_Single_Question extends AppCompatActivity implements Generic
 
             sendToast("Internet Not Connected");
             return false;
+        }
+    }
+
+    private class UploadeImageAsyncTask extends AsyncTask<RequestParams,Void,String>{
+        BufferedReader lReader = null;
+        int lBytesRead,lBytesAvailable,lBufferSize;
+
+        int lMaxBufferSize = 1*1024*1024;
+        byte[] lBuffer;
+        String lUriString;
+
+        public UploadeImageAsyncTask(String fUriString) {
+            this.lUriString = fUriString;
+        }
+
+        @Override
+        protected String doInBackground(RequestParams... params) {
+            String lAttachmentName = "uploaded_file";
+            String lAttachmentFileName = "Image";
+            String lCrlf = "\r\n";
+            String lTwoHyphens = "--";
+            String lBoundary =  "*****";
+
+
+            try {
+                //HttpURLConnection lCon = params[0].setUpConnection();
+                if (lUriString!=null) {
+                    URL url = new URL(fUPLOAD_PIC_URL);
+                    HttpURLConnection lCon = (HttpURLConnection) url.openConnection();
+                    FileInputStream lFileInputStream = new FileInputStream(new File(lUriString));
+
+                    lCon.setUseCaches(false);
+                    lCon.setDoOutput(true);
+                    lCon.setRequestProperty("Connection", "Keep Alive");
+                    lCon.setRequestProperty("Cache-Control", "no-cache");
+                    lCon.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + lBoundary);
+
+
+                    DataOutputStream lDataOutputStream = new DataOutputStream(lCon.getOutputStream());
+
+                    lDataOutputStream.writeBytes(lTwoHyphens + lBoundary + lCrlf);
+                    lDataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + lAttachmentName + "\";filename=\""
+                            + lAttachmentFileName + "\"" + lCrlf);
+                    lDataOutputStream.writeBytes(lCrlf);
+
+
+                    lBytesAvailable = lFileInputStream.available();
+                    lBufferSize = Math.min(lBytesAvailable, lMaxBufferSize);
+                    lBuffer = new byte[lBufferSize];
+
+                    lBytesRead = lFileInputStream.read(lBuffer, 0, lBufferSize);
+
+                    while (lBytesRead > 0) {
+                        lDataOutputStream.write(lBuffer, 0, lBufferSize);
+                        lBytesAvailable = lFileInputStream.available();
+                        lBufferSize = Math.min(lBytesAvailable, lMaxBufferSize);
+                        lBytesRead = lFileInputStream.read(lBuffer, 0, lBufferSize);
+                    }
+
+                    lDataOutputStream.writeBytes(lCrlf);
+                    lDataOutputStream.writeBytes(lTwoHyphens + lBoundary + lCrlf);
+
+                    lDataOutputStream.flush();
+                    lDataOutputStream.close();
+
+                    lReader = new BufferedReader(new InputStreamReader(lCon.getInputStream()));
+                    StringBuilder lStringBuilder = new StringBuilder();
+                    String lLine = "";
+                    while ((lLine = lReader.readLine()) != null) {
+                        lStringBuilder.append(lLine);
+                    }
+                    return lStringBuilder.toString();
+                }
+                else return "z";
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(lReader != null){
+                    try {
+                        lReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String aImgUrl) {
+            super.onPostExecute(aImgUrl);
+
+            fImgUrl = aImgUrl;
+
+            RequestParams lParams = new RequestParams("POST", fSAVE_QUESTION_URL);
+            lParams.addParam(fQID, createQuestionString());
+            lParams.addParam(fGID, fGROUP_ID);
+            new GenericAsyncTask(Create_Single_Question.this, fUPLOADING).execute(lParams);
+
+            finish();
         }
     }
 }
