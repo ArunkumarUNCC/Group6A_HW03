@@ -292,6 +292,7 @@ public class Trivia_Activity extends AppCompatActivity {
                 lParams.addParam(fGID,fGROUPID);
                 lParams.addParam(fQID,fQuestionData.get(fCurrentQuestion).getfQuestionId());
                 lParams.addParam(fA, String.valueOf(fOptions.getCheckedRadioButtonId()));
+//                Log.d("Check Answer", String.valueOf(fOptions.getCheckedRadioButtonId()));
                 new GetCorrectAnswer().execute(lParams);
                 displayDetails();
             }
@@ -408,8 +409,9 @@ public class Trivia_Activity extends AppCompatActivity {
         while(lOptionsIterator.hasNext()){
             lOption = new RadioButton(Trivia_Activity.this);
             lOption.setText(lOptionsIterator.next());
-            lOption.setTag(lOptionsIterator.nextIndex());
+            lOption.setId(lOptionsIterator.nextIndex());
             fOptions.addView(lOption);
+            fOptions.clearCheck();
         }
 
         //Toast.makeText(Trivia_Activity.this,fOptions.getCheckedRadioButtonId()+"",Toast.LENGTH_SHORT).show();
